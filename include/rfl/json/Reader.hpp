@@ -110,6 +110,13 @@ struct Reader {
       }
       return std::string(r);
 
+    } else if constexpr (std::is_same<std::remove_cvref_t<T>, std::string_view>()) {
+      const auto r = yyjson_get_str(_var.val_);
+      if (r == NULL) {
+        return error("Could not cast to string_view.");
+      }
+      return std::string_view(r);
+
     } else if constexpr (std::is_same<std::remove_cvref_t<T>, bool>()) {
       if (!yyjson_is_bool(_var.val_)) {
         return error("Could not cast to boolean.");

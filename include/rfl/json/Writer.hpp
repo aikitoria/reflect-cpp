@@ -109,6 +109,8 @@ class Writer {
   OutputVarType from_basic_type(const T& _var) const noexcept {
     if constexpr (std::is_same<std::remove_cvref_t<T>, std::string>()) {
       return OutputVarType(yyjson_mut_strcpy(doc_, _var.c_str()));
+    } else if constexpr (std::is_same<std::remove_cvref_t<T>, std::string_view>()) {
+      return OutputVarType(yyjson_mut_strn(doc_, _var.data(), _var.size()));
     } else if constexpr (std::is_same<std::remove_cvref_t<T>, bool>()) {
       return OutputVarType(yyjson_mut_bool(doc_, _var));
     } else if constexpr (std::is_floating_point<std::remove_cvref_t<T>>()) {
