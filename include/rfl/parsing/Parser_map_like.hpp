@@ -4,6 +4,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <unordered_map>
 
@@ -22,6 +23,11 @@ template <class R, class W, class T, class ProcessorsType>
 struct Parser<R, W, std::map<std::string, T>, ProcessorsType>
     : public MapParser<R, W, std::map<std::string, T>, ProcessorsType> {};
 
+template <class R, class W, class T, class ProcessorsType>
+  requires AreReaderAndWriter<R, W, std::map<std::string_view, T>>
+struct Parser<R, W, std::map<std::string_view, T>, ProcessorsType>
+    : public MapParser<R, W, std::map<std::string_view, T>, ProcessorsType> {};
+
 template <class R, class W, class T, class Hash, class KeyEqual,
           class Allocator, class ProcessorsType>
   requires AreReaderAndWriter<
@@ -31,6 +37,17 @@ struct Parser<R, W,
               ProcessorsType>
     : public MapParser<
           R, W, std::unordered_map<std::string, T, Hash, KeyEqual, Allocator>,
+          ProcessorsType> {};
+
+template <class R, class W, class T, class Hash, class KeyEqual,
+          class Allocator, class ProcessorsType>
+  requires AreReaderAndWriter<
+      R, W, std::unordered_map<std::string_view, T, Hash, KeyEqual, Allocator>>
+struct Parser<R, W,
+              std::unordered_map<std::string_view, T, Hash, KeyEqual, Allocator>,
+              ProcessorsType>
+    : public MapParser<
+          R, W, std::unordered_map<std::string_view, T, Hash, KeyEqual, Allocator>,
           ProcessorsType> {};
 
 template <class R, class W, class T, class ProcessorsType>

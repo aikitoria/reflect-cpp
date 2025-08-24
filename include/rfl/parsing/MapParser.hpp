@@ -4,6 +4,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <type_traits>
 
 #include "../Ref.hpp"

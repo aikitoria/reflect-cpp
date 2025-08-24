@@ -88,8 +88,15 @@ class MapReader {
   Result<std::pair<KeyType, ValueType>> get_pair(
       const std::string_view& _name, const InputVarType& _var) const noexcept {
     const auto to_pair = [&](ValueType&& _val) {
-      auto pair = std::make_pair(std::string(_name), std::move(_val));
-      return make_key(pair);
+      if constexpr (std::is_same_v<KeyType, std::string_view>) {
+        // For string_view keys, use the string_view directly
+        auto pair = std::make_pair(_name, std::move(_val));
+        return make_key(pair);
+      } else {
+        // For other key types, convert to string first
+        auto pair = std::make_pair(std::string(_name), std::move(_val));
+        return make_key(pair);
+      }
     };
     return Parser<R, W, std::remove_cvref_t<ValueType>, ProcessorsType>::read(
                *r_, _var)
